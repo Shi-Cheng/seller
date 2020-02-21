@@ -7,14 +7,14 @@
   <div>
     <v-header :seller="seller"/>
     <div class="tab border-1px">
-      <router-link tag="div" class="tab-item" to="/seller">
-        <span class="tab-link">商家</span>
-      </router-link>
       <router-link tag="div" class="tab-item" to="/goods">
         <span class="tab-link">商品</span>
       </router-link>
       <router-link tag="div" class="tab-item" to="/rating">
         <span class="tab-link">评论</span>
+      </router-link>
+      <router-link tag="div" class="tab-item" to="/seller">
+        <span class="tab-link">商家</span>
       </router-link>
     </div>
     <div class="content">

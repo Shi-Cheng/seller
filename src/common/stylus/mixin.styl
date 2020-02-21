@@ -1,3 +1,4 @@
+// 元素下划线
 border-1px($color)
   position: relative
   &:after
@@ -8,6 +9,11 @@ border-1px($color)
     bottom: 0
     border-top: 1px solid $color
     content: ' '
+// 去除最后一个元素下划线
+border-none()
+  &:after
+    display: none
+
 // 设置全局背景图
 bg-image($url)
   background-image: url($url+"@2x.png")

@@ -8,7 +8,7 @@ const Seller = (resolve) => {
 }
 
 const Goods = (resolve) => {
-  import('components/goods/goods').then((modules) => {
+  import('components/goods/base-goods').then((modules) => {
     resolve(modules)
   })
 }
@@ -25,7 +25,7 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: '/seller'
+      redirect: '/goods'
     },
     {
       path: '/seller',
