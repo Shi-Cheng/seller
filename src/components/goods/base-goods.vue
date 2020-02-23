@@ -21,7 +21,7 @@
           <li v-for="(item, index) in goods" ref="foodlist" :key="index" class="food-list">
             <h1 class="title">{{ item.name }}</h1>
             <ul>
-              <li v-for="(food, foodIndex) in item.foods" :key="foodIndex" class="food-item border-1px">
+              <li v-for="(food, foodIndex) in item.foods" :key="foodIndex" class="food-item border-1px" @click="selectFood(food,$event)">
                 <div class="icon">
                   <img :src="food.icon" width="57" height="57">
                 </div>
@@ -37,7 +37,7 @@
                     <span v-show="food.oldPrice" class="old"> ￥{{ food.oldPrice }}</span>
                   </div>
                   <div class="cartcontrol-wrapper">
-                    <cartcontrol :food="food"/>
+                    <cartcontrol :food="food" @add="addFood"/>
                   </div>
                 </div>
               </li>
@@ -45,8 +45,9 @@
           </li>
         </ul>
       </div>
+      <shopcart ref="shopcart" :select-foods="selectFoods" :min-price="minPrice" :delivery-price="deliveryPrice"/>
     </div>
-    <shopcart :select-foods="selectFoods" :min-price="minPrice" :delivery-price="deliveryPrice"/>
+    <food ref="food" :food="selectedFood" @add="addFood"/>
   </div>
 </template>
 
@@ -55,6 +56,7 @@ import Bscroll from 'better-scroll'
 import Shopcart from 'components/shopcart/shopcart'
 import { ERR_OK } from '../../api/const'
 import Cartcontrol from '../cartcontrol/cartcontrol'
+import Food from 'components/food/food'
 
 const deliveryPrice = 20
 const minPrice = 20
@@ -63,7 +65,8 @@ export default {
   name: 'Goods',
   components: {
     Cartcontrol,
-    Shopcart
+    Shopcart,
+    Food
   },
   props: {
     seller: {
@@ -78,14 +81,12 @@ export default {
       goods: [],
       listHeight: [],
       scrollY: 0,
-      selectFoods: [{
-        price: 30,
-        count: 2
-      }]
+      selectedFood: {}
     }
   },
   computed: {
     currentIndex() {
+      // 监听this.scrollY 的变化
       for (let i = 0; i < this.listHeight.length; i++) {
         const hight1 = this.listHeight[i]
         const hight2 = this.listHeight[i + 1]
@@ -95,6 +96,19 @@ export default {
         }
       }
       return 0
+    },
+    selectFoods() {
+      // selectFoods 是观察goods的数据变化，this.goods发生变化， selectFoods会被执行
+      // cartcontrol -> base-goods -> shopcart 传递
+      const foods = []
+      this.goods.forEach((good) => {
+        good.foods.forEach((food) => {
+          if (food.count) {
+            foods.push(food)
+          }
+        })
+      })
+      return foods
     }
   },
   created() {
@@ -106,7 +120,11 @@ export default {
       if (!event._constructed) {
         return
       }
-      this.selectFoods = item
+      this.selectedFood = item
+      this.$refs.food.show()
+    },
+    addFood(target) {
+      this._drop(target)
     },
     selectMenu(index, event) {
       if (!event._constructed) {
@@ -115,6 +133,12 @@ export default {
       const foodList = this.$refs.foodlist
       const el = foodList[index]
       this.foodsScroll.scrollToElement(el, 300)
+    },
+    _drop(target) {
+      // 体验优化,异步执行下落动画
+      this.$nextTick(() => {
+        this.$refs.shopcart.drop(target)
+      })
     },
     _followScroll(index) {
       const menuList = this.$refs.menuwrapper
@@ -137,8 +161,8 @@ export default {
         }
       })
     },
-    // 计算每个区域的整体高度
     _calculateHeight() {
+      // 计算每个区域的整体高度
       const foodlist = this.$refs.foodlist
       let hight = 0
       this.listHeight.push(hight)
