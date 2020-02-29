@@ -4,12 +4,14 @@
 * Description:
 */
 <template>
-  <div class="seller">
+  <div ref="seller" class="seller">
     <div class="seller-content">
       <div class="overview">
         <h1 class="title">{{ seller.name }}</h1>
         <div class="desc">
-          12
+          <star :size="36" :score="seller.score" />
+          <span class="text">({{ seller.ratingCount }})</span>
+          <span class="text">月售{{ seller.sellCount }}单</span>
         </div>
         <ul class="remark">
           <li class="block">
@@ -36,6 +38,18 @@
         </div>
       </div>
       <split />
+      <div class="bulletin">
+        <h1 class="title">公告与活动</h1>
+        <div class="content-wrapper border-1px">
+          <p class="content">{{ seller.bulletin }}</p>
+        </div>
+        <ul v-if="seller.supports" class="supports">
+          <li v-for="(item, index) in seller.supports" :key="index" class="support-item border-1px">
+            <span :class="classMap[seller.supports[index].type]" class="icon"/>
+            <span class="text">{{ seller.supports[index].description }}</span>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </template>
@@ -43,9 +57,11 @@
 <script>
 import Split from '../split/split'
 import { mapActions, mapGetters } from 'vuex'
+import Star from '../../base/star/star'
+import BScroll from 'better-scroll'
 export default {
   name: 'Seller',
-  components: { Split },
+  components: { Star, Split, BScroll },
   props: {
     seller: {
       type: Object,
@@ -61,6 +77,10 @@ export default {
     ...mapGetters([
       'favoriteList'
     ])
+  },
+  created() {
+    this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee']
+    this._getInit()
   },
   methods: {
     toggleFavorite() {
@@ -88,6 +108,17 @@ export default {
         })
       }
       return index > -1
+    },
+    _getInit() {
+      this.$nextTick(() => {
+        if (!this.scroll) {
+          this.scroll = new BScroll(this.$refs.seller, {
+            click: true
+          })
+        } else {
+          this.scroll.refresh()
+        }
+      })
     },
     ...mapActions([
       'saveFavoriteList',
@@ -120,6 +151,19 @@ export default {
       font-size: 10px
       color: rgb(77, 85, 93)
       border-1px(rgba(7, 17, 27, 0.1))
+      .star{
+        display: inline-block
+        vertical-align: top
+        margin-right: 8px
+      }
+      .text{
+        display: inline-block
+        vertical-align: top
+        margin-right: 12px
+        line-height: 18px
+        font-size: 10px
+        color: rgb(77, 85, 93)
+      }
     }
     .remark{
       display: flex
@@ -130,6 +174,21 @@ export default {
         border-right: 1px solid rgba(7, 17, 27, 0.1)
         &:last-child{
           border: none
+        }
+        h2{
+          margin-bottom: 4px
+          line-height: 10px
+          font-size: 10px
+          color: rgb(147, 153, 159)
+        }
+        .content{
+          margin-top: 2px
+          line-height: 24px
+          font-size: 10px
+          color: rgb(7, 17, 27)
+          .stress{
+            font-size: 24px
+          }
         }
       }
     }
@@ -153,6 +212,64 @@ export default {
         line-height: 10px
         font-size: 10px
         color: rgb(77, 85, 93)
+      }
+    }
+  }
+  .bulletin{
+    padding: 18px 18px 0 18px
+    .title{
+      margin-bottom: 8px
+      line-height: 14px
+      color: rgb(7, 17, 27)
+      font-size: 14px
+    }
+    .content-wrapper{
+      padding: 0 12px 16px 12px
+      border-1px(rgba(7, 17, 27, 0.1))
+      .content{
+        line-height: 24px
+        font-size: 12px
+        color: rgb(240, 20, 20)
+      }
+    }
+    .supports{
+      .support-item{
+        padding: 16px 12px
+        border-1px(rgba(7, 17, 27, 0.1))
+        font-size: 0
+        &:last-child{
+          border-none()
+        }
+        .icon{
+          display: inline-block
+          width: 16px
+          height: 16px
+          vertical-align: top
+          margin-right: 6px
+          background-size: 16px 16px
+          background-repeat: no-repeat
+          &.decrease {
+            bg-image('decrease_4')
+          }
+          &.discount {
+            bg-image('discount_4')
+          }
+          &.guarantee {
+            bg-image('guarantee_4')
+          }
+          &.invoice {
+            bg-image('invoice_4')
+          }
+          &.special {
+            bg-image('special_4')
+          }
+        }
+        .text{
+          font-size: 12px
+          font-weight: 200px
+          color: rbg(7, 17, 27)
+          line-height: 16px
+        }
       }
     }
   }
