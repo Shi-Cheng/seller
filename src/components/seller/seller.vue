@@ -50,6 +50,26 @@
           </li>
         </ul>
       </div>
+      <split />
+      <div class="pics">
+        <h1 class="title">商家实景</h1>
+        <div ref="picwrapper" class="pic-wrapper">
+          <ul ref="piclist" class="pic-list">
+            <li v-for="(pic, index) in seller.pics" :key="index" class="pic-item">
+              <img :src="pic" width="120" height="90">
+            </li>
+          </ul>
+        </div>
+      </div>
+      <split />
+      <div class="info">
+        <h1 class="title border-1px">商家信息</h1>
+        <ul>
+          <li v-for="(item, index) in seller.infos" :key="index" class="info-item">
+            {{ item }}
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </template>
@@ -81,6 +101,9 @@ export default {
   created() {
     this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee']
     this._getInit()
+  },
+  mounted() {
+    this._getPicInit()
   },
   methods: {
     toggleFavorite() {
@@ -119,6 +142,24 @@ export default {
           this.scroll.refresh()
         }
       })
+    },
+    _getPicInit() {
+      if (this.seller.pics) {
+        const picWidth = 120
+        const margin = 6
+        const width = (picWidth + margin) * this.seller.pics.length - margin
+        this.$refs.piclist.style.width = width + 'px'
+        this.$nextTick(() => {
+          if (!this.picScroll) {
+            this.picScroll = new BScroll(this.$refs.picwrapper, {
+              scrollX: true,
+              eventPassthrough: 'vertical'
+            })
+          } else {
+            this.$refs.picScroll.refresh()
+          }
+        })
+      }
     },
     ...mapActions([
       'saveFavoriteList',
@@ -270,6 +311,51 @@ export default {
           color: rbg(7, 17, 27)
           line-height: 16px
         }
+      }
+    }
+  }
+  .pics{
+    padding: 18px 18px 18px 18px
+    .title{
+      margin-bottom: 8px
+      line-height: 14px
+      color: rgb(7, 17, 27)
+      font-size: 14px
+    }
+    .pic-wrapper{
+      width: 100%
+      white-space: nowrap
+      overflow: hidden
+      .pic-list{
+        font-size: 0
+        .pic-item{
+          display: inline-block
+          margin-right: 6px
+          width: 120px
+          height: 90px
+          &:last-child {
+            margin: 0
+          }
+        }
+      }
+    }
+  }
+  .info{
+    padding: 18px 18px 0 18px
+    color: rgb(7, 17, 27)
+    .title{
+      padding-bottom: 12px
+      line-height: 14px
+      font-size: 14px
+      border-1px(rgba(7, 17, 27, 0.1))
+    }
+    .info-item{
+      padding: 16px 12px
+      line-height: 16px
+      font-size: 12px
+      border-1px(rgba(7, 17, 27, 0.1))
+      &:last-child{
+        border-none()
       }
     }
   }
