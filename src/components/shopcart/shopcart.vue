@@ -3,6 +3,7 @@
 * Create Time: 2020-02-20
 * Description:
 */
+
 <template>
   <div>
     <div class="shopcart">
@@ -63,6 +64,7 @@
 <script>
 import BScroll from 'better-scroll'
 import Cartcontrol from '../cartcontrol/cartcontrol'
+
 export default {
   name: 'Shopcart',
   components: {
@@ -102,8 +104,7 @@ export default {
         show: false
       }],
       dropBalls: [], // 记录点击的商品el
-      fold: true,
-      hide: true
+      fold: true
     }
   },
   computed: {
@@ -148,7 +149,6 @@ export default {
       if (show) {
         this.$nextTick(() => {
           if (!this.scroll) {
-            /* eslint-disable */
             this.scroll = new BScroll(this.$refs.listcontent, {
               click: true
             })
@@ -168,10 +168,11 @@ export default {
       this.fold = !this.fold
     },
     hideList() {
-      this.fold = false
+      this.fold = true
+      console.log('hideList')
     },
     empty() {
-      if (!this.totalCount){
+      if (!this.totalCount) {
         return
       }
       this.selectFoods.forEach((food) => {
@@ -436,3 +437,5 @@ export default {
   }
 }
 </style>
+
+*/
