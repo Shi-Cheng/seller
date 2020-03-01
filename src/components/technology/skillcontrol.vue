@@ -1,11 +1,11 @@
 /**
 * Auth: PanShiCheng
-* Create Time: 2020-02-20
+* Create Time: 2020-03-01
 * Description:
 */
 <template>
-  <div class="cartcontrol">
-    <transition name="move">
+  <div class="skillcontrol">
+    <transition name="decrease">
       <div v-show="food.count>0" class="cart-decrease" @click.stop.prevent="decreaseCart">
         <span class="inner icon-remove_circle_outline"/>
       </div>
@@ -18,7 +18,7 @@
 <script>
 import Vue from 'vue'
 export default {
-  name: 'Cartcontrol',
+  name: 'Skillcontrol',
   props: {
     food: {
       type: Object,
@@ -31,7 +31,6 @@ export default {
         return
       }
       if (!this.food.count) {
-        // 如果没有这个属性，通过set进行添加
         Vue.set(this.food, 'count', 1)
       } else {
         this.food.count++
@@ -51,29 +50,30 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-.cartcontrol{
+.skillcontrol{
   font-size: 0
   .cart-decrease{
     display: inline-block
     padding: 6px
     opacity: 1
     transform: translate3d(0, 0, 0)
-    &.move-enter-active, &.move-leave-active{
-      transition: all 0.4s linear
-    }
-    &.move-active, &.move-leave-to{
-      opacity: 0
-      transform: translate3d(24px, 0, 0)
-      .inner {
-        transform: rotate(180deg)
-      }
-    }
-    .inner {
+    .inner{
       display: inline-block
       line-height: 24px
       font-size: 24px
       color: rgb(0, 160, 220)
       transition: all 0.4s linear
+      transform: rotate(0)
+    }
+    &.decrease-enter-active, &.decrease-leave-active{
+      transition: all 0.4s linear
+    }
+    &.decrease-active, &.decrease-leave-to{
+      opacity: 0;
+      transform: translate3d(24px, 0, 0)
+      .inner {
+        transform: rotate(180deg)
+      }
     }
   }
   .cart-count{

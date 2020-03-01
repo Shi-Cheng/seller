@@ -16,9 +16,14 @@
       <router-link tag="div" class="tab-item" to="/seller">
         <span class="tab-link">商家</span>
       </router-link>
+      <!--<router-link tag="div" class="tab-item" to="/skills">-->
+      <!--<span class="tab-link">期待</span>-->
+      <!--</router-link>-->
     </div>
     <div class="content">
-      <router-view :seller="seller"/>
+      <keep-alive>
+        <router-view :seller="seller"/>
+      </keep-alive>
     </div>
   </div>
 </template>
@@ -26,7 +31,7 @@
 <script>
 import Header from 'components/header/header'
 import { ERR_OK } from './api/const'
-
+import { urlParse } from './common/js/util'
 export default {
   name: 'App',
   components: {
@@ -34,7 +39,12 @@ export default {
   },
   data() {
     return {
-      seller: {}
+      seller: {
+        id: (() => {
+          const queryParam = urlParse()
+          return queryParam.id
+        })()
+      }
     }
   },
   created() {
@@ -42,10 +52,13 @@ export default {
   },
   methods: {
     _getSeller() {
-      this.$http.get('/api/seller').then((response) => {
+      this.$http.get('/api/seller?id' + this.seller.id).then((response) => {
         response = response.body
         if (response.code === ERR_OK) {
-          this.seller = response.data
+          // Object.assign() 方法用于将所有可枚举属性的值从一个或多个源对象复制到目标对象
+          // 语法   Object.assign(target, ...sources)
+          // 推荐给这种给对象复制
+          this.seller = Object.assign({}, this.seller, response.data)
         }
       })
     }

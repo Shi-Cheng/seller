@@ -169,7 +169,6 @@ export default {
     },
     hideList() {
       this.fold = true
-      console.log('hideList')
     },
     empty() {
       if (!this.totalCount) {
@@ -432,10 +431,8 @@ export default {
     transition: all 0.5s
   }
   &.hide-enter, &.hide-leave-active{
-    opacity: 1
+    opacity: 0
     background: rgba(7, 17, 27, 0)
   }
 }
 </style>
-
-*/

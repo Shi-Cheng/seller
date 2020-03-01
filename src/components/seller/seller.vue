@@ -79,6 +79,8 @@ import Split from '../split/split'
 import { mapActions, mapGetters } from 'vuex'
 import Star from '../../base/star/star'
 import BScroll from 'better-scroll'
+import { saveToLocal, loadFormLocal } from '../../common/js/store'
+
 export default {
   name: 'Seller',
   components: { Star, Split, BScroll },
@@ -90,7 +92,10 @@ export default {
   },
   data() {
     return {
-      favorite: this.favoriteList
+      favorite: this.favoriteList,
+      favoriteStore: (() => {
+        return loadFormLocal(this.seller.id, 'favorite', false)
+      })()
     }
   },
   computed: {
@@ -113,6 +118,7 @@ export default {
       } else {
         this.deleteFavoriteList(this.seller)
       }
+      saveToLocal(this.seller.id, 'favorite', this.seller)
     },
     getFavoriteIcon(item) {
       if (this.isFavorite(item)) {

@@ -18,6 +18,13 @@ const Ratings = (resolve) => {
     resolve(modules)
   })
 }
+
+const Skills = (resolve) => {
+  import('components/technology/skills').then((module) => {
+    resolve(module)
+  })
+}
+
 Vue.use(Router)
 
 export default new Router({
@@ -42,5 +49,10 @@ export default new Router({
       name: 'rating',
       component: Ratings
     }
+    // {
+    //   path: '/skills',
+    //   name: 'skills',
+    //   component: Skills
+    // }
   ]
 })

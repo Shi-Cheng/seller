@@ -53,10 +53,10 @@
 
 <script>
 import Bscroll from 'better-scroll'
-import Shopcart from 'components/shopcart/shopcart'
+import Shopcart from '../shopcart/shopcart'
 import { ERR_OK } from '../../api/const'
 import Cartcontrol from '../cartcontrol/cartcontrol'
-import Food from 'components/food/food'
+import Food from '../food/food'
 
 const deliveryPrice = 20
 const minPrice = 20
